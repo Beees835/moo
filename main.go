@@ -2,19 +2,19 @@ package main
 
 import (
 	"fmt"
+	"github.com/speecan/moo/sample"
 	"runtime"
 	"sync"
 	"time"
 
 	"github.com/speecan/moo/game"
-	"github.com/speecan/moo/sample"
 )
 
 var (
-	difficulty = 4    // moo digit number <= 10
-	benchNum   = 1    // how many benchmark
-	workers    = 16   // run workers at the same time
-	queueSize  = 1000 // queue size for worker depend on PC memoty size
+	difficulty = 4     // moo digit number <= 10
+	benchNum   = 10000 // how many benchmark
+	workers    = 16    // run workers at the same time
+	queueSize  = 1000  // queue size for worker depend on PC memory size
 
 	totalEstimates = 0
 	totalDuration  = time.Duration(0)
@@ -49,10 +49,11 @@ func main() {
 	}
 
 	for n := 0; n < benchNum; n++ {
-		queue <- sample.EstimateHuman(difficulty)
+		// queue <- sample.EstimateHuman(difficulty)
 		// queue <- sample.EstimateWithRandom(difficulty)
 		// queue <- sample.EstimateWithRandom2(difficulty)
 		// queue <- munenari.Estimate(difficulty)
+		queue <- sample.Est(difficulty)
 	}
 	close(queue)
 	wg.Wait()

@@ -56,3 +56,39 @@ func GetMooNum(digit int) []int {
 	answer := sl[:digit]
 	return answer
 }
+
+// GetAllCandidates Reference: https://medium.com/weekly-webtips/step-by-step-guide-to-array-permutation-using-recursion-in-javascript-4e76188b88ff/*
+func GetAllCandidates(digits int) [][]int {
+	nums := []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
+
+	var getPermute func(arr []int, n int) [][]int
+	getPermute = func(arr []int, n int) [][]int {
+
+		// If we need 0 more digits we need to return one "empty" permutation.
+		// as this allows us to build up permutations of given length digit.
+		if n == 0 {
+			return [][]int{{}} // slice containing one empty slice
+		}
+
+		var res [][]int
+
+		for i := 0; i < len(arr); i++ {
+			curNum := arr[i]
+
+			remainNums := make([]int, 0, len(arr)-1)
+			remainNums = append(remainNums, arr[:i]...)
+			remainNums = append(remainNums, arr[i+1:]...)
+
+			// Recursively permute the remainder for n-1 times
+			subPermutation := getPermute(remainNums, n-1)
+
+			// Then for each subPermutation, we prepend currentNum
+			for _, sp := range subPermutation {
+				newPermutation := append([]int{curNum}, sp...)
+				res = append(res, newPermutation)
+			}
+		}
+		return res
+	}
+	return getPermute(nums, digits)
+}

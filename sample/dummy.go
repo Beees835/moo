@@ -55,3 +55,28 @@ func EstimateWithRandom2(difficulty int) game.Estimate {
 		return r
 	}
 }
+
+func Est(difficulty int) game.Estimate {
+	candidates := game.GetAllCandidates(difficulty)
+
+	return func(q game.Question) []int {
+		guess := candidates[0]
+
+		curHits, curBlows := q(guess)
+		if curHits == difficulty {
+			return guess
+		}
+
+		// Else we here proceed to filter out all candidates that doesn't match the current curHits and curBlows
+		// As we know if it doesn't match that aren't possible candidates
+		newCandidates := candidates[:0]
+		for _, c := range candidates {
+			if game.GetHit(c, guess) == curHits && game.GetBlow(c, guess) == curBlows {
+				newCandidates = append(newCandidates, c)
+			}
+		}
+		candidates = newCandidates
+
+		return guess
+	}
+}
